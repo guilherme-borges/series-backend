@@ -63,6 +63,29 @@ module.exports = {
             .first();
 
         return res.status(201).json(userUpdated);
+    },
+
+    async delete(req, res) {
+        const { id } = req.params;
+
+        try {
+
+            const user = await connection('users')
+                .select()
+                .from('users')
+                .where('id', id)
+                .first();
+
+            if (!user) {
+                return res.status(400).json({ error: 'Usuário não encontrado!' });
+            }
+
+            await connection('users').where('id', id).del();
+
+            return res.status(200).json({ message: 'Usuário deletado com sucesso.' });
+        } catch (error) {
+            return res.status(500).json(error);
+        }
     }
 
 }
